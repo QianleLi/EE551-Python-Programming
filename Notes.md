@@ -14,6 +14,8 @@ I will skip some points that I have already known and I believe that I won't for
   * [Filtering Lists](Notes.md#Filtering-Lists)
   * [and & or](Notes.md#and-&-or)
   * [Lambda Functions](Notes.md#Lambda-Functions)
+* [Lecture 3](Notes.md#Lecture-3)
+  * [Regular expression](Notes.md#Regular-expression)
 * [Other functions](Notes.md#Other-functions)
 
 ### Lecture 1
@@ -211,6 +213,313 @@ g = lambda x: x*2   #10
 or
 print((lambda x: x*2)(3))  #6
 ```
+[Return to Index](Notes.md#Index)
+### Lecture 3
+
+#### Regular expression
+
+To use the regular expression, we have to use the built-in module `re`.  
+Find the exact string in a longer string:  
+```
+import re
+target = 'like is short, I learn python.'
+result = re.findall('python', target)  #output ['python']
+result1 = re.findall('java', target)  #output[]
+```
+Now we have a string `target = 'abc acc adc azc atc aec'`, in the following program we are gonna find out substrings that the middle letter is 'd' or 'e'.   
+```
+import re 
+target = 'abc aec adc agc atc amc'
+result re.findall('a[de]c', target)  #remember this statement means d or e
+print(result)  #output ['aec', 'adc']
+```
+Now we have a new demand that we need to find all substrings that their middle letters are among 'b' to 'z'.  
+```
+import re
+target = 'abc acc aec agc adc aic'
+result = re.findall('a[b-z]c', target)
+print(result)  #output['abc', 'acc', 'aec', 'agc', 'adc', 'aic']
+```
+we can also get all substrings whose middle letters are **not** among the given range.  
+```
+import re
+target = 'abc acc aec agc adc aic'
+result = re.find_all('a[^c-z]c', target)
+print(result)    #output is ['abc']
+```
+***
+
+| Regular Expression | Explanation |
+| --- | --- |
+| [abf] | Check if the letter in that position is a or b or f |
+| [a-z] | Check if the letter in that position is among a to z |
+| [^a-z] | Check if the letter in that position is **not** among a to z |
+
+***
+There is a much easier way to check whether there are numbers or other letters.   
+
+| Regular Expression | Explanation | In other words |
+| --- | --- | --- |
+| \d | Check if it is a number | [0-9] |
+| \D | Check if it is **not** a number | [^0-9] |
+| \w | Check if it is a letter or ‘_’ | [A-Za-z_] |
+| \W | Check if it is **not** a letter or ‘_’ | [^A-Za-z_] |
+| \s | Check if it is an invisible character(space, \t, \v, \r, \n, \f) | [\f\n\t\r\v] |
+| \S | Check if it is **not** an invisible character | [^\f\n\t\r\v] |
+
+- Check numbers  
+    ```
+    import re
+    target = ‘Number: 12’
+    result = re.findall(‘\d’, target)
+    print(result)   #output[‘1’,’2’]
+    ```
+    ```
+    import re
+    target = ‘NO12’
+    result = re.findall(‘\D’target)
+    print(result)  #output [‘N’, ‘0’]
+    ```
+- Check letters or _  
+    ```
+    import re
+    target = ‘I love_’
+    result = re.findall(‘\w’, target)
+    print(result)   #output [‘i’, ‘l’, ‘o’, ‘v’, ‘e’, ‘_’]
+    ```
+    ```
+    import re
+    target = 'I am _'
+    result = re.findall('\W', target)
+    print(result)   #output [' ', ' ']
+    ```
+- Check invisible characters
+	```
+	import re 
+	target = 'life is short \n I'
+	result = re.findall('\s', target)
+	print(result)  #[' ', ' ', ' ', '\n', ' ']
+	```
+	```
+	import re
+	target = 'life \n is short'
+	result = re.findall('\S', target)
+	print(result)  #output ['l', 'i', 'f', 'e', 'i', 's', 's', 'h', 'o', 'r', 't']
+	```
+
+***
+
+| Example | Explanation |
+| ---- | ---- |
+| {3} | The letter before {3} appears three times |
+| {3,8} | The letter before {3} appears 3 to 8 times |
+| ? | The letter before ? appears 0 or 1 time |
+| + | The letter before + appears at least 1 times |
+| * | The letter before * appears at least 0 times |
+
+The following are the illustration codes:  
+```
+import re
+content = 'To be or not o be, that is a question'
+result = re.findall('\w{1,30}', content)
+'''
+'\w'represents a letter or '_', '{1,30}' means '\w' appears more than 1 but less than 30 times. The above statements pick out every word whose length is between 1 and 30.
+'''
+print(result) #output ['To', 'be', 'or', 'not', 'to', 'be', 'that', 'is', 'a', 'question']
+print(len(result)  #output 10, which means this content has 10 words.
+```
+The above codes have some flaws, we should adjust it by adding '+':  
+```
+import re
+content = 'To be or not to be, that is a problem.'
+result = re.findall('\w+',content)
+#'+' means '\w' appears more than 0 times. So a word will be picked up as long as is length is larger than 0
+print(result)
+```
+Another example is:  
+```
+import re
+content = 'comment number: 12'
+result = re.findall('\d{1,10}', content)   #We can get the comment number between 0 and 9999999999.
+# We can also write like this:  
+#result = re.findall('\d+', content)
+print(result)    #Get 12
+```
+***
+
+| Regular Expression | Explanation |
+| --- | --- |
+| ^ | If starts with the letter behind '^', match |
+| $ | If ends with the letter behind '$', match |
+
+Example or `^`:   
+```
+import re
+content = 'http://www.zhihu.com'
+content1 = '/question/62747717/answer/576934857'
+result = re.findall('^http.*', content)
+'''
+'^http' matches the content begins with 'http', '.' means all strings except for '\n', * means repeat 0 or infinite times.
+'''
+result1 = re.findall('^http.*', content1)
+print(result)  #output ['http://www.zhihu.com']
+print(result1)  #output []
+```
+Example of '$':  
+```
+import re 
+content = 'https://www.zhihu.com/shiyue.png'
+content1 = 'https://www.zhihu.com'
+result = re.findall('.*png$', content)
+result1 = re.findall('.*png$',content1)
+print(result)  #output ['https://www.zhihu.com/shiyue.png']
+print(result1)  #output []
+```
+***
+Group: `(\d+)`  
+The content inside () makes up a group, if the current position meet the demends of the content, then match successfully.  
+Example: Get the date:  
+```
+import re
+content = 'Issued at 2018/9/9'
+result = re.findall('.*?(\d.*\d)', content)
+# (\d.*\d) represents a group, starts with a digit and ends with a digits. 
+print(result)  #output ['2018/9/9']
+```
+A regular expression statement can have more than one groups:  
+```
+import re
+content = 'Issued at 2020/2/6, by: Libenze'
+result = re.findall('.*?(\d.*\d).*:(.*)', content)
+'''
+The above statement means that the first group starts wih a digit and ends with a digit in order to get the date. The second group starts after meeting ':', the content after ':' makes uo the second group.
+'''
+print(result) #output [('2020/2/6','Libenze')]
+```
+**Python will add a parenthesis both at the beginning and the end of the regular expression.**
+***
+`match` method:  
+```
+import re
+content = 'Issued at 2020/2/6, by: Libenze
+result = re.match('.*?(\d.*\d).*:(.*)', content)
+#The parameters of match method is the same as those of findall method
+print(result.group())
+'''
+The defaut parameter is 0, which is print(result.group(0)), this statement get the content inside the outermost parenthesis. So the output is 'Issued at 2020/2/6, by: Libenze'.
+'''
+print(result.group(1))  #output '2020/2/6', get the content of (\d.*\d)
+print(result.group(2))  #output 'Libenze', get the content of (.*)
+print(result.groups())  #output ('2020/2/6', 'Libenze')
+```
+There is a point that should pay more attention about the `match` method:  
+```
+import re
+content = 'Comment number: 12'
+result = re.match('\d', content)
+print(result)  #output None
+'''
+The output is None because match method starts matching \d from the first character of content. As the first character of content is not a digit, it directly returns None.
+'''
+```
+***
+Greedy/non-greedy mode   
+- non-greedy mode  
+	```
+	import re
+	content = 'Issued at 2020/2/6'
+	result = re.findall('.*?(\d.*\d)',content)
+	# '?' represented non-greedy mode, the firsr .* will match content as little as possible. With \d, it will end as soon as it meets the first digit.
+	print(result)  # output ['2020/2/6']
+	```
+- greedy mode  
+	```
+	import re
+	content = 'Issued at 2020/02/06'
+	result = re.findall('.*(\d.*\d)', content)
+	'''
+	The first .* matches as much contents as possible, as \d follows, it will not stop when meeting the first digit, when it is at the position of / after 02, te remaining, which is 06 also meets the requirement of (\d.*\d), but when at the position of the last 0, the requirement is not meeted, so the first .* stops matching. Therefore, the output is only ['23']
+	'''
+	print(result)
+	```
+Here is another example:  
+```
+import re 
+content = 'Issued at 2020/02/06'
+result = re.findall('.*?(\d.*?\d)', content)
+'''
+The second .* is in non-greedy mode, which starts matching from the first 2 and end at the first 0. Similarly, it can get 18, 12,and 23
+'''
+print(result)  #output ['20', '18', '12', '23']
+```
+***
+`search` method:  
+```
+import re
+content = 'Comment number: 12'
+result_match = re.match('\d', content)
+result_search = re.search('\d', content)
+print(result_match)  # None
+print(result_search)  # <_sre.SRE_Match object; span=(4, 5), match='1'>
+print(result_search.group()) # '1'
+'''
+search method start match from the beginning, once it metches one target, it returns directly and will not continue.
+'''
+```
+`sub` method:  
+```
+#Purpose: replace all 'php' in the content with 'python'  
+import re
+content = 'python php java c javascript java php'
+result = re.sub('php', 'python', content)
+print('result')
+# output 'python python java c javascript java python'
+```
+```
+#Purpose: Replace all 'php' with 'python' no matter they are upper or lower case
+import re
+content = 'python PHP java v javascript java php'
+result = re.sub('php', 'python', content)
+result1 = re.sub('php', 'python', content, flags=re.I)
+#'re.I' means not tell the upper and lower cases.
+#Another common attribute is 're.S', means any characters
+#In common mode, represents any characters except for \n
+print(result) #'python PHP java c javascript java python'
+print(result1) #'python python java c javascript java python'
+```
+```
+#Purpose: Replace the first php with python
+import re
+content = 'python PHP java c transcript java php'
+result = re.sub('php', 'python', content, flag=re.I)
+result1 = re.sub('php','python',content,count = 1, flag = re.I)
+# The default value of count = 0, means all 'php' will be replaced with 'python'; count = 1 means that only replace the first 1 'php'.
+print(result)
+print(result1) #'python python java c javascript java php'
+```
+The second parameter of `sub` method can be a function. 
+```
+import re
+
+def judge(value):
+	value = value.group()  #get the match result
+	if int(value) < 60:
+		return 'failed'
+	elif int(value) < 80:
+		return 'pass'
+	elif int(value) <90:
+		return 'fair'
+	else:
+		return 'good'
+		
+content = 'Libenze:100 Amy:99 John:50 Gary:75'
+result = re.sub('\d+',judge,content)
+print(result)
+'''
+The matched result of the first parameter is the value passed into the judge function, the return value will replace the matched result.
+'''
+#output: Libenze:good Amy:good John:failed Gary:pass
+```  
 [Return to Index](Notes.md#Index)
 ### Other functions
 
