@@ -24,7 +24,7 @@ I will skip some points that I have already known and I believe that I won't for
 	* [findall method](Notes.md#findall-method)
 	* [Check numbers and letters](Notes.md#Check-numbers-and-letters)
 	* [Find letters that appear many times](Notes.md#Find-letters-that-appear-many-times)
-	* ['^' & '$'](Notes.md#'^'-&-'$')
+	* [^ & $](Notes.md#^-&-$)
 	* [Group](Notes.md#Group)
 	* [match method](Notes.md#match-method)
 	* [Greedy/non-greedy mode](Notes.md#Greedy/non-greedy-mode)
@@ -336,7 +336,7 @@ re.sub('ROAD$', 'RD.', s) # '100 BRD'
 ```
 To match 'ROAD' when it was at the end of the string and it was its own whole word, not a part of some larger word.   
 To express this in regular expression, use '\b', which means "a word boundary must occur right there."  
-`re.sub('\\bROAD$', 'RD', s) # '100 BROAD'`  
+`re.sub('\bROAD$', 'RD', s) # '100 BROAD'`  
 ```
 s = '100 BOARD'
 re.sub(r'\bROAD$', 'RD', S)  # '100 BOARD'
@@ -346,7 +346,7 @@ re.sub(r'\bROAD$', 'RD.', s)  # '100 BROAD ROAD APT. 3'
 re.sub(r'\bROAD\b', 'RD.', s)  # '100 BROAD RD. APT. 3'
 
 import re
-pattern = '^M?M?M?$'
+pattern = '^M?M?M?$'  
 re.search(pattern, 'M') #<re.Match object; span=(0, 1), match='M'>
 re.search(pattern, 'MM') #<re.Match object; span=(0, 2), match='M'>
 re.search(pattern, 'MMM') #<re.Match object; span=(0, 3), match='M'>
@@ -501,7 +501,7 @@ print(result)    #Get 12
 ```
 [Return to Index](Notes.md#Index)
 *** 
-##### '^' & '$'
+##### ^ & $
 
 | Regular Expression | Explanation |
 | --- | --- |
