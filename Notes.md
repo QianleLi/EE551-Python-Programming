@@ -15,7 +15,21 @@ I will skip some points that I have already known and I believe that I won't for
   * [and & or](Notes.md#and-&-or)
   * [Lambda Functions](Notes.md#Lambda-Functions)
 * [Lecture 3](Notes.md#Lecture-3)
+  * [Files](Notes.md#Files)
+  * [Handling Exceptions](Notes.md#Handling-Exceptions)
+  * [Replace function of string](Notes.md#Replace-function-of-string)
   * [Regular expression](Notes.md#Regular-expression)
+    * [Class Notes](Notes.md#Class-Notes)
+    * [Using the {n,m} Syntax](Notes.md#Using-the-{n,m}-Syntax)
+	* [findall method](Notes.md#findall-method)
+	* [Check numbers and letters](Notes.md#Check-numbers-and-letters)
+	* [Find letters that appear many times](Notes.md#Find-letters-that-appear-many-times)
+	* ['^' & '$'](Notes.md#'^'-&-'$')
+	* [Group](Notes.md#Group)
+	* [match method](Notes.md#match-method)
+	* [Greedy/non-greedy mode](Notes.md#Greedy/non-greedy-mode)
+	* [search method](Notes.md#search-method)
+	* [sub method](Notes.md#sub-method)
 * [Other functions](Notes.md#Other-functions)
 
 ### Lecture 1
@@ -216,7 +230,145 @@ print((lambda x: x*2)(3))  #6
 [Return to Index](Notes.md#Index)
 ### Lecture 3
 
+#### Files
+
+- Working wih file objects  
+	```
+	f = open("./blues.mp3", "rb")
+	t.tell()  #The tell method tells the current position in the open file. In this example, the output is 0 because we are at the beginning of the file.
+	f.seek(-128, 2)
+	'''
+	The seek method moves to another position in the open file.
+	The second parameter specifies what the first means: 
+		0 means position move to an absolute position (counting from the start of he file)
+		1 means move to a relative position (counting from the current position)
+		2 means move to a potion relative to the end of the file
+	This statement tells the file object to move to a position 128 bytes to from the end of the file.
+	'''
+	tafData = f.read(128)
+	'''
+	read method read exact number of bytes of the file. If the given number is missed or negative, it will read all bytes.
+	After reading the file, the position of the file object has changed during the position. If the beginning position is 482847, then the end position is 482975, which moved 128 bytes.
+	'''
+	f.seek(0)  
+	'''
+	f.seek(offset[,whence])  
+	seek method moves the pointer to assigned position. 
+	'offset' is the the relative movement unit. 'whence' is optional, represents from which the pointer starts to move: 
+		0 means start from the beginning  of the file; 
+		1 means start from the current position; 
+		2 means start from the end of the file.
+	If the method runs successfully, it returns the new position; wheres it returns -1.
+	'''
+	f.close()  #We must close the file object after all operations
+	f.closed  #After close the file object, this statement will return True, or it will return False.
+	```
+- Write to files  
+	- Clear the content and write new content  
+		```
+		logfile = open('test.log', 'w')
+		logfile.write('test success')
+		logfile.close()
+		
+		print(open('test.log').read())  #output: test success
+		```
+	- Retain the old stuff and append more content
+		```
+		logfile = open('test.log', 'a')
+		logfile.write('\nline 2')
+		logfile.close()
+		
+		print(open('test.log').read())  
+		'''
+		output: 
+		test success
+		line 2
+		'''
+		```
+[Return to Index](Notes.md#Index)
+#### Handling Exceptions
+
+- Accessing a non-exsiting dictionary key will raise a KeyError exception.
+- Searching a list for a non-exsiting value will raise a ValueError exception.
+- Calling a non-exsiting method will raise an AttributeError excepion.
+- Referencing a non-existing variable will raise a NameError excepion.
+- Mixing datatypes without coercion will raise a TypeError exception.  
+If we open a non-existing file:  
+```
+fsock = open("/notthere", "r")
+'''
+We will get a FileNotFoundError/ or IOError
+FileNotFoundError is one type of IOError
+'''
+```  
+To avoid the error:  
+```
+try:  
+	fsock = open("/notthere")
+except IOError:  
+	print("The file doe not exist, exiting gracefully.")
+print("This line will always be printed")
+```  
+[Return to Index](Notes.md#Index)
+#### Replace function of string
+
+```
+s = '100 NORTH MAIN ROAD'
+s.replace('ROAD', 'RD') #'100 NORTH MAIN RD'  #replace method will replace all 'ROAD' with 'RD'
+s = '100 NORTH BROAD ROAD'
+s.replace('ROAD', 'RD') #'100 NORTH BRD,RD'
+#We can use list slice to solve this problem
+s[:-4] + s[-4:].replace('ROAD', 'RD') #'100 NORTH BROAD RD'
+#But we have to adjust the statement as long as s string is different, that's why we need regular expression.
+```
+[Return to Index](Notes.md#Index)
 #### Regular expression
+
+##### Class Notes
+
+```
+import re 
+s = '100 NORTH BROAD ROAD'
+re.sub('ROAD$', 'RD.', s)    #'100 NORTH BROAD RD.'
+
+s = '100 BROAD'
+re.sub('ROAD$', 'RD.', s) # '100 BRD'
+```
+To match 'ROAD' when it was at the end of the string and it was its own whole word, not a part of some larger word.   
+To express this in regular expression, use '\b', which means "a word boundary must occur right there."  
+`re.sub('\\bROAD$', 'RD', s) # '100 BROAD'`  
+```
+s = '100 BOARD'
+re.sub(r'\bROAD$', 'RD', S)  # '100 BOARD'
+
+s = '100 BROAD ROAD APT. 3'
+re.sub(r'\bROAD$', 'RD.', s)  # '100 BROAD ROAD APT. 3'
+re.sub(r'\bROAD\b', 'RD.', s)  # '100 BROAD RD. APT. 3'
+
+import re
+pattern = '^M?M?M?$'
+re.search(pattern, 'M') #<re.Match object; span=(0, 1), match='M'>
+re.search(pattern, 'MM') #<re.Match object; span=(0, 2), match='M'>
+re.search(pattern, 'MMM') #<re.Match object; span=(0, 3), match='M'>
+re.search(pattern, 'MMMM')
+re.search(pattern, '')  # <re.Match object; span=(0, 0), match=''>
+```
+[Return to Index](Notes.md#Index)
+##### Using the {n,m} Syntax
+
+```
+pattern = '^M{0,3}$'
+'''
+This pattern says: "Match the start of the string, then anywhere from zero to three M characters, then the end of the string." The 0 and 3 can be any numbers; if you want to match at least one but no more than three M characters, you could say M{1,3}.
+'''
+re.search(pattern, 'M') #<_sre.SRE_Match object; span=(0, 1), match='M'>
+re.search(pattern, 'MM') #<re.Match object; span=(0, 2), match='M'>
+re.search(pattern, 'MMM') #<re.Match object; span=(0, 3), match='M'>
+re.search(pattern, 'MMMM')
+```
+[Return to Index](Notes.md#Index)  
+**The following is some notes of other tutorials that I found on the Internet**  
+##### findall method
 
 To use the regular expression, we have to use the built-in module `re`.  
 Find the exact string in a longer string:  
@@ -247,15 +399,16 @@ target = 'abc acc aec agc adc aic'
 result = re.find_all('a[^c-z]c', target)
 print(result)    #output is ['abc']
 ```
-***
-
 | Regular Expression | Explanation |
 | --- | --- |
 | [abf] | Check if the letter in that position is a or b or f |
 | [a-z] | Check if the letter in that position is among a to z |
 | [^a-z] | Check if the letter in that position is **not** among a to z |
 
+[Return to Index](Notes.md#Index)
 ***
+##### Check numbers and letters
+
 There is a much easier way to check whether there are numbers or other letters.   
 
 | Regular Expression | Explanation | In other words |
@@ -306,13 +459,14 @@ There is a much easier way to check whether there are numbers or other letters.
 	result = re.findall('\S', target)
 	print(result)  #output ['l', 'i', 'f', 'e', 'i', 's', 's', 'h', 'o', 'r', 't']
 	```
-
+[Return to Index](Notes.md#Index)
 ***
+##### Find letters that appear many times
 
 | Example | Explanation |
 | ---- | ---- |
-| {3} | The letter before {3} appears three times |
-| {3,8} | The letter before {3} appears 3 to 8 times |
+| {3} | The letter before '{3}' appears three times |
+| {3,8} | The letter before '{3,8}' appears 3 to 8 times |
 | ? | The letter before ? appears 0 or 1 time |
 | + | The letter before + appears at least 1 times |
 | * | The letter before * appears at least 0 times |
@@ -341,18 +495,20 @@ Another example is:
 import re
 content = 'comment number: 12'
 result = re.findall('\d{1,10}', content)   #We can get the comment number between 0 and 9999999999.
-# We can also write like this:  
+We can also write like this:  
 #result = re.findall('\d+', content)
 print(result)    #Get 12
 ```
-***
+[Return to Index](Notes.md#Index)
+*** 
+##### '^' & '$'
 
 | Regular Expression | Explanation |
 | --- | --- |
 | ^ | If starts with the letter behind '^', match |
 | $ | If ends with the letter behind '$', match |
 
-Example or `^`:   
+Example of `^`:   
 ```
 import re
 content = 'http://www.zhihu.com'
@@ -375,7 +531,10 @@ result1 = re.findall('.*png$',content1)
 print(result)  #output ['https://www.zhihu.com/shiyue.png']
 print(result1)  #output []
 ```
+[Return to Index](Notes.md#Index)
 ***
+##### Group
+
 Group: `(\d+)`  
 The content inside () makes up a group, if the current position meet the demends of the content, then match successfully.  
 Example: Get the date:  
@@ -383,7 +542,7 @@ Example: Get the date:
 import re
 content = 'Issued at 2018/9/9'
 result = re.findall('.*?(\d.*\d)', content)
-# (\d.*\d) represents a group, starts with a digit and ends with a digits. 
+(\d.*\d) represents a group, starts with a digit and ends with a digits. 
 print(result)  #output ['2018/9/9']
 ```
 A regular expression statement can have more than one groups:  
@@ -396,9 +555,11 @@ The above statement means that the first group starts wih a digit and ends with 
 '''
 print(result) #output [('2020/2/6','Libenze')]
 ```
-**Python will add a parenthesis both at the beginning and the end of the regular expression.**
+**Python will add a parenthesis both at the beginning and the end of the regular expression.**  
+[Return to Index](Notes.md#Index)
 ***
-`match` method:  
+##### match method
+
 ```
 import re
 content = 'Issued at 2020/2/6, by: Libenze
@@ -422,14 +583,18 @@ print(result)  #output None
 The output is None because match method starts matching \d from the first character of content. As the first character of content is not a digit, it directly returns None.
 '''
 ```
+[Return to Index](Notes.md#Index)
 ***
-Greedy/non-greedy mode   
+##### Greedy/non-greedy mode   
+
 - non-greedy mode  
 	```
 	import re
 	content = 'Issued at 2020/2/6'
 	result = re.findall('.*?(\d.*\d)',content)
-	# '?' represented non-greedy mode, the firsr .* will match content as little as possible. With \d, it will end as soon as it meets the first digit.
+	'''
+	'?' represented non-greedy mode, the firsr .* will match content as little as possible. With \d, it will end as soon as it meets the first digit.
+	'''
 	print(result)  # output ['2020/2/6']
 	```
 - greedy mode  
@@ -452,8 +617,10 @@ The second .* is in non-greedy mode, which starts matching from the first 2 and 
 '''
 print(result)  #output ['20', '18', '12', '23']
 ```
+[Return to Index](Notes.md#Index)
 ***
-`search` method:  
+##### search method 
+
 ```
 import re
 content = 'Comment number: 12'
@@ -466,14 +633,16 @@ print(result_search.group()) # '1'
 search method start match from the beginning, once it metches one target, it returns directly and will not continue.
 '''
 ```
-`sub` method:  
+[Return to Index](Notes.md#Index)
+***
+##### sub method
+
 ```
 #Purpose: replace all 'php' in the content with 'python'  
 import re
 content = 'python php java c javascript java php'
 result = re.sub('php', 'python', content)
-print('result')
-# output 'python python java c javascript java python'
+print('result')  #output 'python python java c javascript java python'
 ```
 ```
 #Purpose: Replace all 'php' with 'python' no matter they are upper or lower case
@@ -493,7 +662,9 @@ import re
 content = 'python PHP java c transcript java php'
 result = re.sub('php', 'python', content, flag=re.I)
 result1 = re.sub('php','python',content,count = 1, flag = re.I)
-# The default value of count = 0, means all 'php' will be replaced with 'python'; count = 1 means that only replace the first 1 'php'.
+'''
+The default value of count = 0, means all 'php' will be replaced with 'python'; count = 1 means that only replace the first 1 'php'.
+'''
 print(result)
 print(result1) #'python python java c javascript java php'
 ```
