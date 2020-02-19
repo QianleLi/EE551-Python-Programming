@@ -18,20 +18,21 @@ I will skip some points that I have already known and I believe that I won't for
   * [Files](Notes.md#Files)
   * [Handling Exceptions](Notes.md#Handling-Exceptions)
   * [Replace function of string](Notes.md#Replace-function-of-string)
-  * [Regular expression](Notes.md#Regular-expression)
-    * [Class Notes](Notes.md#Class-Notes)
-    * [Using the {n,m} Syntax](Notes.md#Using-the-{n,m}-Syntax)
-	* [findall method](Notes.md#findall-method)
-	* [Check numbers and letters](Notes.md#Check-numbers-and-letters)
-	* [Find letters that appear many times](Notes.md#Find-letters-that-appear-many-times)
-	* [^ & $](Notes.md#^-&-$)
-	* [Group](Notes.md#Group)
-	* [match method](Notes.md#match-method)
-	* [Greedy/non-greedy mode](Notes.md#Greedy/non-greedy-mode)
-	* [search method](Notes.md#search-method)
-	* [sub method](Notes.md#sub-method)
+  * [Regular expression Class Note 1](Notes.md#Regular-expression-Class-Note-1)
+* [Lecture 4](Notes.md#Lecture-4)
+  * [Regular expression Class Note 2](Notes.md#Regular-expression-Class-Note-2)
 * [Other functions](Notes.md#Other-functions)
-
+* [Regular Expression Extra materials](Notes.md#Regular-Expression-Extra-Materials)
+  * [Using the {n,m} Syntax](Notes.md#Using-the-{n,m}-Syntax)
+  * [findall method](Notes.md#findall-method)
+  * [Check numbers and letters](Notes.md#Check-numbers-and-letters)
+  * [Find letters that appear many times](Notes.md#Find-letters-that-appear-many-times)
+  * [^ & $](Notes.md#^-&-$)
+  * [Group](Notes.md#Group)
+  * [match method](Notes.md#match-method)
+  * [Greedy/non-greedy mode](Notes.md#Greedy/non-greedy-mode)
+  * [search method](Notes.md#search-method)
+  * [sub method](Notes.md#sub-method)
 ### Lecture 1
 
 #### Dictionary
@@ -322,9 +323,7 @@ s[:-4] + s[-4:].replace('ROAD', 'RD') #'100 NORTH BROAD RD'
 #But we have to adjust the statement as long as s string is different, that's why we need regular expression.
 ```
 [Return to Index](Notes.md#Index)
-#### Regular expression
-
-##### Class Notes
+#### Regular expression Class Note 1
 
 ```
 import re 
@@ -354,7 +353,52 @@ re.search(pattern, 'MMMM')
 re.search(pattern, '')  # <re.Match object; span=(0, 0), match=''>
 ```
 [Return to Index](Notes.md#Index)
-##### Using the {n,m} Syntax
+
+### Lecture 4
+
+#### Regular expression Class Note 2
+
+- re.compile(): To create a regex object
+- re.search(): find a pattern in a string
+- re.match(): does this entire string conform to this pattern
+- re.findall(): find all patterns in this string and returns all the matches in it not just the first match
+- re.group(): to get the matched string  
+- Searching with Regex match = re.search(pattern,string)  
+
+##### Pattern type(Character Classes)  
+
+- \w : sequence of word-like characters [a-zA-Z0–9_] that are not space  
+- \d : Any numeric digit[0–9]  
+- \s : whitespace characters(space,newline,tab)  
+- \D : match characters that are NOT numeric digits  
+- \W : match characters that are NOT words,digit or underscore  
+- \S : match characters that are NOT spaces,tab or newline  
+
+##### Repetition Group
+
+```
++ : 1 or more
++ * : 0 or more
+? : 0 or 1
+{k}: exactly integer K occurence
+{m,n}: m to n occurence inclusive
+. :matches any character except the newline(\n)
+^: start of the string
+$: end of string
+\: escape character
+```
+### Other functions
+
+- Count function  
+    This function returns the number of times a value occurs in a list.
+	```
+	li = [1,1,1,1,1,4,4,4,3]
+	print(li.count(4))   #3
+	```
+	
+### Regular Expression Extra Materials
+
+#### Using the {n,m} Syntax
 
 ```
 pattern = '^M{0,3}$'
@@ -368,7 +412,7 @@ re.search(pattern, 'MMMM')
 ```
 [Return to Index](Notes.md#Index)  
 **The following is some notes of other tutorials that I found on the Internet**  
-##### findall method
+#### findall method
 
 To use the regular expression, we have to use the built-in module `re`.  
 Find the exact string in a longer string:  
@@ -407,7 +451,7 @@ print(result)    #output is ['abc']
 
 [Return to Index](Notes.md#Index)
 ***
-##### Check numbers and letters
+#### Check numbers and letters
 
 There is a much easier way to check whether there are numbers or other letters.   
 
@@ -461,7 +505,7 @@ There is a much easier way to check whether there are numbers or other letters.
 	```
 [Return to Index](Notes.md#Index)
 ***
-##### Find letters that appear many times
+#### Find letters that appear many times
 
 | Example | Explanation |
 | ---- | ---- |
@@ -501,7 +545,7 @@ print(result)    #Get 12
 ```
 [Return to Index](Notes.md#Index)
 *** 
-##### ^ & $
+#### ^ & $
 
 | Regular Expression | Explanation |
 | --- | --- |
@@ -533,7 +577,7 @@ print(result1)  #output []
 ```
 [Return to Index](Notes.md#Index)
 ***
-##### Group
+#### Group
 
 Group: `(\d+)`  
 The content inside () makes up a group, if the current position meet the demends of the content, then match successfully.  
@@ -558,7 +602,7 @@ print(result) #output [('2020/2/6','Libenze')]
 **Python will add a parenthesis both at the beginning and the end of the regular expression.**  
 [Return to Index](Notes.md#Index)
 ***
-##### match method
+#### match method
 
 ```
 import re
@@ -585,7 +629,7 @@ The output is None because match method starts matching \d from the first charac
 ```
 [Return to Index](Notes.md#Index)
 ***
-##### Greedy/non-greedy mode   
+#### Greedy/non-greedy mode   
 
 - non-greedy mode  
 	```
@@ -619,7 +663,7 @@ print(result)  #output ['20', '18', '12', '23']
 ```
 [Return to Index](Notes.md#Index)
 ***
-##### search method 
+#### search method 
 
 ```
 import re
@@ -635,7 +679,7 @@ search method start match from the beginning, once it metches one target, it ret
 ```
 [Return to Index](Notes.md#Index)
 ***
-##### sub method
+#### sub method
 
 ```
 #Purpose: replace all 'php' in the content with 'python'  
@@ -692,12 +736,3 @@ The matched result of the first parameter is the value passed into the judge fun
 #output: Libenze:good Amy:good John:failed Gary:pass
 ```  
 [Return to Index](Notes.md#Index)
-### Other functions
-
-- Count function  
-    This function returns the number of times a value occurs in a list.
-	```
-	li = [1,1,1,1,1,4,4,4,3]
-	print(li.count(4))   #3
-	```
-	
