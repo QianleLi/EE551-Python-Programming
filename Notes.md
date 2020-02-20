@@ -359,12 +359,24 @@ re.search(pattern, '')  # <re.Match object; span=(0, 0), match=''>
 #### Regular expression Class Note 2
 
 - re.compile(): To create a regex object
-- re.search(): find a pattern in a string
+- re.search(): find a pattern in a string, returns None if no match.  
 - re.match(): does this entire string conform to this pattern
-- re.findall(): find all patterns in this string and returns all the matches in it not just the first match
+- re.findall(): find all patterns in this string and returns all the matches in it not just the first match, returns a list.
 - re.group(): to get the matched string  
-- Searching with Regex match = re.search(pattern,string)  
-
+- Searching with Regex match = re.search(pattern,string)   
+- If regular expression not able to find that pattern it will return None.
+	```
+	import re
+	example = "Welcome to the world of Python"
+	pattern = r'Python'
+	match = re.search(pattern,example)
+	
+	print(match)
+	if match:
+	    print("found", match.group())
+	else:
+	    print("No match found")
+	```
 ##### Pattern type(Character Classes)  
 
 - \w : sequence of word-like characters [a-zA-Z0–9_] that are not space  
@@ -386,6 +398,118 @@ re.search(pattern, '')  # <re.Match object; span=(0, 0), match=''>
 ^: start of the string
 $: end of string
 \: escape character
+|: match one of many possible groups
+```
+##### Examples
+
+```    ?
+message = 'my number is 123-4567' # Here we are creating regex object,which define the pattern we are looking for 
+myregex = re.compile(r'(\d\d\d-)?\d\d\d-\d\d\d\d') # Then we are trying to find a pattern in the string
+match = myregex.search(message) # This will tell us the actual text
+print(match.group())
+```
+```    findall
+#In case we have multiple phone number, use findall
+message = 'my number is 510-123-4567 and my office number is 510-555-6677'
+#Here we are creating regex object,which define the pattern we are looking for 
+myregex = re.compile(r'\d\d\d-\d\d\d-\d\d\d\d')
+#Find all pattern of the string and return a list objects
+print(myregex.findall(message))
+```
+```   \
+#To find out parentheses literally in string, we need to escape parentheses using backslash \
+import re
+message = "my number is (123)-555-4567"
+myregex = re.compile(r'\(\d\d\d\)-(\d\d\d-\d\d\d\d)')
+match = myregex.search(message)
+print(match.group())
+```
+```   group()
+message = 'my number is 510-123-4567'
+#Here we are creating regex object,which define the pattern we are looking for 
+myregex = re.compile(r'(\d\d\d)-(\d\d\d)-(\d\d\d\d)')
+#Then we are trying to find a pattern in the string
+match = myregex.search(message)
+print(match.group())   //510-123-4567
+print(match.group(1))  //510
+print(match.group(2))  //123
+print(match.group(3))   //4567
+```
+```  ?
+myregex = re.compile(r'\(?(\d\d\d)?\)?-?(\d\d\d-\d\d\d\d)') 
+#There maybe parentheses, the first three digits and the first strikethrough.
+```
+```   |
+import re
+lang = re.compile(r'Pyt(hon|con|mon)')
+match = lang.search('Pytmon is a wonderful language')
+print(match.group())
+```
+```
+import re
+pattern = '^M?M?M?$'   #Start with a M and end with a M, may be one M or nothing in the middle.
+print(re.search(pattern, 'M'))
+print(re.search(pattern, 'MM'))
+print(re.search(pattern, 'MMM'))
+print(re.search(pattern, 'MMMM'))
+```
+```
+import re
+myphone = re.compile(r'\(?(\d\d\d)?\)?-?\d\d\d-\d\d\d\d')
+message1 = "My phone number is 123-4567"
+message2 = "My phone number is 201-123-4567"
+message3 = "My phone number is (201)-123-4567"
+match = myphone.search(message1)
+print(match.group())
+```
+```   ?
+import re
+myexpr = re.compile(r'Pyt(ho)?n')   //h and o must be or not in the string together, or return none
+match = myexpr.search('Python a wonderful language')
+print(match.group())
+match = myexpr.search('Pythohon a wonderful language')  //The position of (ho)? must be 'ho' or nothing)
+print(match.group())   //None
+```
+``` *
+#'*' zero or more time
+import re
+myexpr = re.compile(r'Pyth(on)*')
+match = myexpr.search("Welcome to the world of Pythonon")
+print(match.group())     //'Pythonon'
+match = myexpr.search("Welcome to the world of Python")
+print(match.group())    //'Python'
+#'on' has to be together
+```
+```
+#'+' must appear at least 1 or more time
+import re
+myexpr = re.compile(r'Pyth(on)*')
+match = myexpr.search("Welcome to the world of Pythonon")
+print(match.group())     //'Pythonon'
+match = myexpr.search("Welcome to the world of Python")
+print(match.group())    //'Python'
+#'on' has to be together
+```
+```
+#Now if we want to match a specific number of times
+import re
+myregex = re.compile(r'(Re){3}'')
+match = myregex.search("My matching string is ReReRe")
+print(match.group())   #'ReReRe'
+```
+```
+#Range of repetitions
+import re
+myregex = re.compile(r'(Re){3,5}')
+match = myregex.search("My matching string is ReReReRe")
+print(match.group())    #'ReReReRe'
+```
+```
+#The regular expression in Python do greedy matches i.e it try to match longest possible string
+import re
+mydigit = re.compile(r'(\d){3,5}')   //As more as possible
+match = mydigit.search('123456789')
+match.group()
 ```
 ### Other functions
 
