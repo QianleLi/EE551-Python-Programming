@@ -21,6 +21,14 @@ I will skip some points that I have already known and I believe that I won't for
   * [Regular expression Class Note 1](Notes.md#Regular-expression-Class-Note-1)
 * [Lecture 4](Notes.md#Lecture-4)
   * [Regular expression Class Note 2](Notes.md#Regular-expression-Class-Note-2)
+* [Lecture 5](Notes.md#Lecture-5)
+  * [List Comprehension](Notes.md#List-Comprehension)
+    * [Examples](Notes.md#Examples)
+	* [List Comprehensions vs Lambda functions](Notes.md#List-Comprehensions-vs-Lambda-functions)
+	* [Multi-conditions](Notes.md#Multi-conditions)
+	* [Nesting Loops](Notes.md#Nesting-Loops)
+	* [Dictionary Comprehension](Notes.md#Dictionary-Comprehension)
+	* [Filtering](Notes.md#Filtering)
 * [Other functions](Notes.md#Other-functions)
 * [Regular Expression Extra materials](Notes.md#Regular-Expression-Extra-Materials)
   * [Using the {n,m} Syntax](Notes.md#Using-the-{n,m}-Syntax)
@@ -510,16 +518,170 @@ import re
 mydigit = re.compile(r'(\d){3,5}')   //As more as possible
 match = mydigit.search('123456789')
 match.group()
+```  
+[Return to Index](Notes.md#Index)
+### Lecture 5
+
+#### List Comprehension
+
+List comprehensions provide a concise way to create lists.  
+This is the basic syntax:  
+`new_list = [expression for_loop_one_or_more conditions]`  
+It consists of brackets containing an expression followed by a for clause, then zero or more for or if clauses. The expressions can be anything, meaning you can put in all kinds of objects in lists.  
+The result will be a new list resulting from evaluating the expression in the context of the for and if clauses which follow it.   
+The list comprehension always returns a result list.   
+[Return to Index](Notes.md#Index) 
+##### Examples
+
 ```
+numbers = [1, 2, 3, 4]
+squares = []
+for n in numbers:
+    squares.append(n**2)
+print(squares)  # Output: [1, 4, 9, 16]
+
+#Finding squares using list comprehensions:
+numbers = [1, 2, 3, 4]
+squares = [n**2 for n in numbers]
+'''
+Here, square brackets signifies that the output is a list. n**2 is the expression executed for each element and for n in numbers is used to iterate over each element. In other words, execute n**2 (expression) for each element in numbers.
+'''
+print(squares)  # Output: [1, 4, 9, 16]
+```
+***
+```
+#Example: Find common numbers from two lists using for loop.
+
+list_a = [1, 2, 3, 4]
+list_b = [2, 3, 4, 5]
+common_num = []
+for a in list_a:
+    for b in list_b:    
+        if a == b:      
+            common_num.append(a)
+print(common_num)  # Output [2, 3, 4]
+
+#Using conditions in list comprehensions:
+common_num = [a for a in list_a for b in list_b if a == b]
+print(common_num) # Output: [2, 3, 4]
+
+#Another way to simplify the expression
+common_num = [i  for i in list_a if i in list_b]
+print(common_num) # Output: [2, 3, 4]
+```
+***
+Produce a tuple:  
+```
+#Example: Return numbers from the list which are not equal as a tuple:
+list_a = [1, 2, 3]
+list_b = [2, 7]
+different_num = [(a, b) for a in list_a for b in list_b if a != b]
+print(different_num) # Output: [(1, 2), (1, 7), (2, 7), (3, 2), (3, 7)]
+#Here. as we are returning a list of tuples, tuples must be in parenthesis to avoid errors. 
+#In the above example, tuples with a and b will be printed such that a and b are not the same.
+```
+***
+Iterate over strings:  
+```
+#List comprehensions can also be used to iterate over strings, as shown below:
+list_a = ["Hello", "World", "In", "Python"]
+small_list_a = [str.lower() for str in list_a]
+print(small_list_a) # Output: ['hello', 'world', 'in', 'python']
+```
+***
+Produce a list of lists:  
+```
+#Like tuples, list comprehensions can be used to produce a list of a list, as shown below:
+list_a = [1, 2, 3]
+square_cube_list = [ [a**2, a**3] for a in list_a]
+print(square_cube_list) # Output: [[1, 1], [4, 8], [9, 27]]
+```
+[Return to Index](Notes.md#Index)  
+##### List Comprehensions vs Lambda functions
+
+There are various built in functions and lambda functions that can help play with lists just like list comprehensions.  
+```
+#Double all the numbers in a list using lambda functions:
+num = [1, 2, 3, 4]
+double_num = map(lambda x: x + x, num)
+print(list(double_num))
+```
+##### Multi-conditions
+
+```
+#create numeric indicators for colors
+color_list = ['green', 'red', 'blue', 'yellow']
+color_indicator = [0 if color == 'green'else 1 if color == 'red' else 2 if color == 'blue' else 3 for color in color_list]
+print(color_list)
+print(color_indicator)
+```
+```
+color_list = ['green', 'red', 'blue', 'pink', 'yellow']
+color_mapping = {'green': 0, 'red': 1, 'blue':2, 'yellow':3}
+color_indicator2 = [color_mapping[color] if color in color_mapping else 'na' for color in color_list]
+print(color_list)
+print(color_indicator2)
+```
+[Return to Index](Notes.md#Index) 
+##### Nesting Loops
+
+You can nest loops to perform operations and return a matrix. Here we create a matrix of color attributes:  
+```
+color_list1 = ['green', 'red', 'blue', 'yellow']
+color_list2 = ['dark', 'bright', 'tinted', 'glowing']
+color_matrix = [[color2 + ' ' + color1 for color1 in color_list1] for color2 in color_list2]
+print(color_matrix)
+```
+
+##### Dictionary Comprehension
+
+```
+words = ['goodbye', 'cruel', 'world']
+data = {word: len(word) for word in words}
+#Notice that the key word and its value len(word) are separated with a colon ':'
+print(data)
+```
+Another useful trick for creating dictionaries is to zip two lists together. 
+```
+words = ["hello", "old", "friend"]
+lengths = [len(word) for word in words]
+data1 = zip(words, lengths)
+data2 = dict(zip(words, lengths))   #change tuple to dictionary
+print(data1, data2) #<zip object at 0x000002B73FF66308> {'hello': 5, 'old': 3, 'friend': 6}
+```
+##### Filtering
+You can filter the items that are included.
+```
+words = ['deified', 'radar', 'guns']
+palindromes = [word for word in words if word == word[::-1]]
+print(palindromes)  #['deified', 'radar']
+
+words = ["not", "on", "my", "watch"]
+data = {w: w[::-1] for w in words if len(w) < 5}
+print(data)  #{'not': 'ton', 'on': 'no', 'my': 'ym'}
+```
+[Return to Index](Notes.md#Index)  
 ### Other functions
 
-- Count function  
+- count function  
     This function returns the number of times a value occurs in a list.
 	```
 	li = [1,1,1,1,1,4,4,4,3]
 	print(li.count(4))   #3
 	```
-	
+- zip function  
+	Make iterable elements into tuples.  
+	```
+	a = [1,2,3]
+	b = [4,5,6]
+	c = [4,5,6,7,8]
+	zipped = zip(a,b)     # Get a list of tuples
+	#[(1, 4), (2, 5), (3, 6)]
+	zip(a,c)              # Number of element is equal to the least lenGth
+	#[(1, 4), (2, 5), (3, 6)]
+	zip(*zipped)          # doing the opposite of zip()
+	#[(1, 2, 3), (4, 5, 6)]
+	```
 ### Regular Expression Extra Materials
 
 #### Using the {n,m} Syntax
