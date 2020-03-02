@@ -72,6 +72,7 @@ d.clear() #clear a dictionary
 ```
 params = {"server":"mpilgrim", "database":"master", "uid":"sa", "pwd":"secret"}
 params.key() #dict_keys(['server', 'database', 'uid', 'pwd'])
+print('%s' %params.key())
 params.values()  #dict_values(['mpilgrim', 'master', 'sa', 'secret'])
 params.items()  #dict_items([('server', 'mpilgrim'), ('database', 'master'), ('uid', 'sa'), ('pwd', 'secret')])
 
