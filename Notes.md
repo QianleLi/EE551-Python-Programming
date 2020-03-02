@@ -55,6 +55,7 @@ d = {"server":"mpilgrim", "database":"master"}
 d["mpilgrim"]  #Error, input a value cannot get a key
 d["database"] = "pubs"   #Modify an existing value,You can not have duplicate keys in a dictionary. Assigning a value to an existing key will wipe out the old value.
 d["uid"] = "sa"      #Add a pair of key and value
+d.get(key, default=None)   #get the value of the key, if there is no such a key in the dict, return the default value.
 
 d = {}
 d["key"] = "value"
