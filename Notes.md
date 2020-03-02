@@ -29,6 +29,11 @@ I will skip some points that I have already known and I believe that I won't for
 	* [Nesting Loops](Notes.md#Nesting-Loops)
 	* [Dictionary Comprehension](Notes.md#Dictionary-Comprehension)
 	* [Filtering](Notes.md#Filtering)
+* [Lecture 6](Notes.md#Lecture-6)
+  * [Web scrapping](Notes.md#Web-scrapping)
+  * [Regular expression class note 3](Notes.md#Regular-expression-class-note-3)
+    * [Quantifiers — * + ? and {}](Notes.md#Quantifiers-—-*-+-?-and-{})
+	* [Substitute](Notes.md#Substitute)
 * [Other functions](Notes.md#Other-functions)
 * [Regular Expression Extra materials](Notes.md#Regular-Expression-Extra-Materials)
   * [Using the {n,m} Syntax](Notes.md#Using-the-{n,m}-Syntax)
@@ -416,6 +421,14 @@ myregex = re.compile(r'(\d\d\d-)?\d\d\d-\d\d\d\d') # Then we are trying to find 
 match = myregex.search(message) # This will tell us the actual text
 print(match.group())
 ```
+```
+import re
+#Finding the number of punctuations in a particular piece of text
+target = [';','.',',','–']
+string = "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair, we had everything before us, we had nothing before us, we were all going direct to Heaven, we were all going direct the other way – in short, the period was so far like the present period, that some of its noisiest authorities insisted on its being received, for good or for evil, in the superlative degree of comparison only."
+pattern = r'[,;.–]'
+print(len(re.findall(pattern,string)))
+```
 ```    findall
 #In case we have multiple phone number, use findall
 message = 'my number is 510-123-4567 and my office number is 510-555-6677'
@@ -661,6 +674,95 @@ data = {w: w[::-1] for w in words if len(w) < 5}
 print(data)  #{'not': 'ton', 'on': 'no', 'my': 'ym'}
 ```
 [Return to Index](Notes.md#Index)  
+### Lecture 6
+
+#### Web scrapping
+
+Import BeautifulSoup from bs4, which is the module that can actually parse the HTML of the web page retrieved from the server.
+```
+#import get to call a get request on the site
+from requests import get
+
+#get the first page of the east bay housing prices
+response = get('https://sfbay.craigslist.org/search/eby/apa?hasPic=1&availabilityMode=0') #get rid of those lame-o's that post a housing option without a pic using their filter
+
+from bs4 import BeautifulSoup
+html_soup = BeautifulSoup(response.text, 'html.parser')
+#get the macro-container for the housing posts
+posts = html_soup.find_all('li', class_= 'result-row')
+
+#get the macro-container for the housing posts
+posts = html_soup.find_all('li', class_= 'result-row')
+
+#grab the first post and all the variables you want from it, make sure you know how to access each of them for one post before you loop the whole page
+post_one=posts[0]
+print(post_one)
+
+#grab the price of the first post
+post_one_price = post_one.a.text
+print(post_one_price)
+
+#remove white space (\n) from the string
+post_one_price.strip()
+
+#grab the time and datetime it was posted
+post_one_time = post_one.find('time', class_= 'result-date')
+print(post_one_time)
+post_one_datetime = post_one_time['datetime']
+print(post_one_datetime)
+
+#title is 'a'' and the class, link is grabbing the href attribute of that variable
+post_one_title = post_one.find('a', class_='result-title hdrlnk')
+post_one_link = post_one_title['href']
+
+#easy to grab the post title by taking the text element of the title variable
+post_one_title_text = post_one_title.text
+
+#grabs the whole segment of housing details. We will need missing value handling in the loop as this kind of detail is not common in posts
+#the text can be split, and we can use indexing to grab the elements we want. number of bedrooms is the first element.
+#sqft is the third element
+
+post_one_num_bedrooms = post_one.find('span', class_ = 'housing').text.split()[0]
+print(post_one_num_bedrooms)
+post_one_sqft = post_one.find('span', class_ = 'housing').text.split()[2][:-3] #cleans the ft2 at the end
+print(post_one_sqft)
+post_one_hood = posts[0].find('span', class_='result-hood').text #grabs the neighborhood, this is the problem column that requires
+#a lot of cleaning and figuring out later.
+print(post_one_hood)
+```
+[Return to Index](Notes.md#Index)
+#### Regular expression class note 3
+
+##### Quantifiers — * + ? and {}
+
+- abc*: matches a string that has ab followed by zero or more c 
+- abc+: matches a string that has ab followed by one or more c
+- abc?: matches a string that has ab followed by zero or one c
+- abc{2}: matches a string that has ab followed by 2 c
+- abc{2,}: matches a string that has ab followed by 2 or more c
+- abc{2,5}: matches a string that has ab followed by 2 up to 5 c
+- a(bc)*: matches a string that has a followed by zero or more copies of the sequence bc
+- a(bc){2,5}: matches a string that has a followed by 2 up to 5 copies of the sequence bc  
+[Return to Index](Notes.md#Index)
+
+##### Substitute
+
+- This is another great functionality. When you work with NLP you sometimes need to substitute integers with X’s. Or you might need to redact some document. Just the basic find and replace in any of the text editors.
+- Input: search pattern, replacement pattern, and the target string
+- Output: Substituted string  
+```
+string = "It was the best of times, it was the worst of times."
+string = re.sub(r'times', r'life', string)
+print(string)
+```
+```
+#remove street number from address
+import re
+address = '284-12 West Street, Hoboken, 07030 '
+test = re.sub(r'^[\d-]+ ', '', address, 2)
+print(test)
+```
+[Return to Index](Notes.md#Index)
 ### Other functions
 
 - count function  
@@ -682,6 +784,7 @@ print(data)  #{'not': 'ton', 'on': 'no', 'my': 'ym'}
 	zip(*zipped)          # doing the opposite of zip()
 	#[(1, 2, 3), (4, 5, 6)]
 	```
+[Return to Index](Notes.md#Index)
 ### Regular Expression Extra Materials
 
 #### Using the {n,m} Syntax
@@ -696,7 +799,7 @@ re.search(pattern, 'MM') #<re.Match object; span=(0, 2), match='M'>
 re.search(pattern, 'MMM') #<re.Match object; span=(0, 3), match='M'>
 re.search(pattern, 'MMMM')
 ```
-[Return to Index](Notes.md#Index)  
+
 **The following is some notes of other tutorials that I found on the Internet**  
 #### findall method
 
