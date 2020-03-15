@@ -34,6 +34,18 @@ I will skip some points that I have already known and I believe that I won't for
   * [Regular expression class note 3](Notes.md#Regular-expression-class-note-3)
     * [Quantifiers — * + ? and {}](Notes.md#Quantifiers-—-*-+-?-and-{})
 	* [Substitute](Notes.md#Substitute)
+* [Lecture 7](Notes.md#Lecture-7)
+  * [Operators](Notes.md#Operators)
+    * [Arithmetic Operators](Notes.md#Arithmetic-Operators)
+	* [Comparison Operators](Notes.md#Comparison-Operators)
+	* [Assignment Operators](Notes.md#Assignment-Operators)
+	* [Bitwise Operators](Notes.md#Bitwise-Operators)
+	* [Logical Operators](Notes.md#Logical-Operators)
+	* [Membership Operators](Notes.md#Membership-Operators)
+  * [String Tricks](Notes.md#String-Tricks)
+* [Lecture 8](Notes.md#Lecture-8)
+  * [Function](Notes.md#Function)
+  * [Functional programming](Notes.md#Functional-programming)
 * [Other functions](Notes.md#Other-functions)
 * [Regular Expression Extra materials](Notes.md#Regular-Expression-Extra-Materials)
   * [Using the {n,m} Syntax](Notes.md#Using-the-{n,m}-Syntax)
@@ -763,8 +775,312 @@ test = re.sub(r'^[\d-]+ ', '', address, 2)
 print(test)
 ```
 [Return to Index](Notes.md#Index)
+### Lecture 7 
+
+#### Operators:  
+
+##### Arithmetic Operators
+
+```
+a = 10
+b = 20
+print(a + b)
+print(a - b)
+print(a * b)
+print(a / b)
+print(a % b)
+```
+[Return to Index](Notes.md#Index)
+###### Floor Division
+
+```
+#Return the maximum integer that less than or equal to the result
+-9//2        #reault of -9/2 = -4.5, so we get -5
+```
+##### Comparison Operators
+
+```
+==, !=, >, <, >=, <=
+
+<> means not equal, but it is only used in python 2.6 or earlier version.
+```
+##### Assignment Operators
+
+```
+=, +=, -=, *=, /=, %=, **=, //=
+```
+[Return to Index](Notes.md#Index)
+##### Bitwise Operators
+
+Bitwise operator works on bits and performs bit by bit operation.   
+###### &
+
+& Binary AND Operator copies a bit to the result if it exists in both operands
+```
+a = 60            # 60 = 0011 1100 
+b = 13            # 13 = 0000 1101 
+c = 0
+c = a & b    
+print(bin(c))     #0b1100
+```
+###### |
+
+| Binary OR It copies a bit if it exists in either operand.
+```
+c = a | b           # c = 61 = 0011 1101 
+```
+###### ^
+
+^ Binary XOR It copies the bit if it is set in one operand but not both.
+```
+c = a ^ b            #  49   0b110001
+```
+###### ~
+
+~ Binary Ones Complement It is unary and has the effect of 'flipping' bits.
+```
+a = 60            # 60 = 0011 1100 
+b = 13            # 13 = 0000 1101 
+c = 0
+c =  ~ b          #add 1 and multiply eith -1
+print(bin(c))  #-0b1110
+c =  ~ a          
+print(bin(c))   #-0b111101
+```
+[Return to Index](Notes.md#Index)
+###### <<
+
+<< Binary Left Shift The left operands value is moved left by the number of bits specified by the right operand.
+```
+b = 13            # 13 = 0000 1101 
+c = 0
+c =  b << 2
+print(bin(c))    #0b110100
+```
+###### >>
+
+Binary Right Shift The left operands value is moved right by the number of bits specified by the right operand.
+```
+b = 13            # 13 = 0000 1101 
+c =  b >> 2
+print(bin(c))
+```
+##### Logical Operators
+
+```
+and, or, not
+```
+##### Membership Operators
+
+```
+a = 10
+b = 20
+list = [1, 2, 3, 4, 5 ];
+
+if ( a in list ):
+    print "Line 1 - a is available in the given list"
+else:
+    print "Line 1 - a is not available in the given list"
+
+if ( b not in list ):
+    print "Line 2 - b is not available in the given list"
+else:
+    print "Line 2 - b is available in the given list"
+
+a = 2
+if ( a in list ):
+    print "Line 3 - a is available in the given list"
+else:
+    print "Line 3 - a is not available in the given list"
+```
+[Return to Index](Notes.md#Index)
+#### String Tricks
+
+- Reversing String
+```
+a = 'new'
+print('Reverse is', a[::-1])
+```
+- Splitting String into multiples
+```
+a = 'Who Are You'
+b = a.split()
+print(b)
+```
+- Printing out multiples of strings
+```
+print('me'*3+' '+'no'*4)
+```
+- Creating a single string
+```
+a = ['I', 'am', 'here']
+print(' '.join(a))
+```
+- Check if two words are anagrams
+```
+from collections import Counter 
+def is_anagram(str1, str2): 
+    return Counter(str1) == Counter(str2) 
+print(is_anagram('geek', 'eegk'))   #True
+print(is_anagram('geek', 'peek'))   #False
+```
+- Flatten Lists
+```
+import itertools
+a = [[1, 2], [3, 4], [5, 6]]
+b = list(itertools.chain.from_iterable(a))
+print(b)   #[1, 2, 3, 4, 5, 6]
+```
+- Reverse a list
+```
+a=['10','9','8','7']
+print(a[::-1])
+```
+- Combining two lists
+```
+a=['a','b','c','d']
+b=['e','f','g','h']
+for x, y in zip(a, b):
+    print(x,y)
+	Output: 
+		('a', 'e')
+		('b', 'f')
+		('c', 'g')
+		('d', 'h')
+		('e', 'f')
+```
+- Negative Indexing Lists
+```
+a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+a[-3:-1]     #[8, 9]
+```
+- Swapping Values
+```
+x, y = 1, 2
+x, y = y, x
+print(x, y)   #(2, 1)
+```
+[Return to Index](Notes.md#Index)
+### Lecture 8
+
+#### Function 
+
+Function example: 
+```
+def f(x):
+    return 2*x + 3
+```
+
+Keys To A Good Function:
+* Is sensibly named
+* Has a single responsibility
+* Includes a docstring
+* Returns a value
+* Is not longer than 50 lines
+* Is idempotent and, if possible, pure
+***
+- Naming
+
+	- The first issue with the name of this function is its use of acronyms/abbreviations. 
+	- Prefer full English words to abbreviations and non-universally known acronyms.
+- Single Responsibility
+	- Single Responsibility Principle states that (in our case) a function should have a single responsibility. That is, it should do one thing and only one thing. 
+	- One great reason is that if every function only does one thing, there is only one reason ever to change it: if the way in which it does that thing must change.
+	- It also becomes clear when a function can be deleted: if, when making changes elsewhere, it becomes clear the function’s single responsibility is no longer needed, simply remove it.
+- Docstrings
+	- Every function requires a docstring
+	- Use proper grammar and punctuation; write in complete sentences
+	- Begins with a one-sentence summary of what the function does
+	- Uses prescriptive rather than descriptive language
+- Return Values
+	- Functions can (and should) be thought of as little self-contained programs. 
+	- They take some input in the form of parameters and return some result. 
+	- Parameters are, of course, optional. Return values, however, are not optional, from a Python internals perspective. 
+	- Even if you try to create a function that doesn’t return a value, you can’t. If a function would otherwise not return a value, the Python interpreter “forces it” to return None.
+- Function length
+	- The length of a function directly affects readability and, thus, maintainability. 
+	- If a function is following the Single Responsibility Principle, it is likely to be quite short. 
+	- If it is pure or idempotent (discussed below), it is also likely to be short. 
+- Idempotency
+An idempotent function always returns the same value given the same set of arguments, regardless of how many times it is called.
+- Purity
+In functional programming, a function is considered pure if it is both idempotent and has no observable side effects.
+**Using the 'global' keyword**  
+```
+def myFunction():   #a and b are not returned by the function
+    global a
+    a = "Cathy"
+    b = "Eric"
+    print(a,b)
+a = "Terra"
+b = "Brandol"
+myFunction()    #Cathy Eric
+print(a,b)    #Cathy Brandol
+```
+[Return to Index](Notes.md#Index)
+#### Functional programming
+
+- Finding the path
+```
+import sys, os
+os.getcwd()    #'D:\\courses\\EE551\\jupyter_note'
+```
+```
+import sys, os, re, unittest
+def regressionTest():   #Get a list of file names in the current directory
+    path = os.getcwd() 
+    sys.path.append(path) 
+    files = os.listdir(path)
+    for file in files:
+        print(file)
+regressionTest()   
+```
+- Filtering lists revisited
+	- Python has a built−in filter() function which takes two arguments, a function and a list, and returns a list.
+	- The function passed as the first argument to filter must itself take one argument, and the list that filter returns will contain all the elements from the list passed to filter for which the function passed to filter returns true.
+```
+def odd(n):
+    return n % 2
+li = [1, 2, 3, 5, 9, 10, 256, -3]
+filter(odd, li)    #[1, 3, 5, 9, -3] 
+#or 
+[e for e in li if odd(e)]      #[1, 3, 5, 9, -3] 
+```
+	- filter takes two arguments, a function (odd) and a list (li). 
+	- It loops through the list and calls odd with each element. If odd returns a true value (remember, any non−zero value is true in Python), then the element is included in the returned list, otherwise it is filtered out. 
+	- The result is a list of only the odd numbers from the original list, in the same order as they appeared in the original.
+**Combine filter function with regular expression**
+```
+files = os.listdir(path)
+test = re.compile("test\.py$", re.IGNORECASE) 
+files = filter(test.search, files)
+```
+[Return to Index](Notes.md#Index)
 ### Other functions
 
+- Counter function
+	This function returns a directionary of numbers and relative letters in the word.
+```
+from collections import Counter 
+print(Counter('teeth'))      #Counter({'t': 2, 'e': 2, 'h': 1})
+my_count = Counter()   # defining an empty Counter
+my_count.update("a")   # adding values to my_count
+print(my_count)       #Counter({'a': 1})
+my_count.update("ab")
+print(my_count)       #Counter({'a': 2, 'b': 1})
+```
+We can retrieve the highest frequency values using the most_common() function of the Counter object. 
+```
+my_count = Counter()   # defining an empty Counter
+my_count.update("abcdbacadddbbdcaddefabcdd")
+my_count.most_common()
+#output: [('d', 9), ('a', 5), ('b', 5), ('c', 4), ('e', 1), ('f', 1)]
+```
+We can also use the most_common() function to find the n least common elements.
+```
+n=2
+my_count.most_common()[:-n:-1]  #[('f', 1)]
+```
 - count function  
     This function returns the number of times a value occurs in a list.
 	```
@@ -783,6 +1099,13 @@ print(test)
 	#[(1, 4), (2, 5), (3, 6)]
 	zip(*zipped)          # doing the opposite of zip()
 	#[(1, 2, 3), (4, 5, 6)]
+	```
+- set function
+	Create a set which doesn't has any multiply items.
+	```
+	a = [10, 20, 30, 40, 20, 20, 30, 10, 40, 40, 40]
+	set(a)  #{10, 20, 30, 40}
+	print(max(set(a), key = a.count))  #40
 	```
 [Return to Index](Notes.md#Index)
 ### Regular Expression Extra Materials
