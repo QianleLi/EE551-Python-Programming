@@ -151,6 +151,22 @@ t.index("example")   #output index 4
 
 ('a', )  #This is a tuple with one element
 ```
+Example:
+```
+1)What is the data type of (1)?   (a)
+a) Tuple
+b) Integer
+c) List
+d) Both tuple and integer
+
+2)What will be the output of the following Python code?  (d)
+>>> a=(1,2,3,4)
+>>> del(a[2])
+a) Now, a=(1,2,4)
+b) Now, a=(1,3,4)
+c) Now, a=(3,4)
+d) Error 
+```
 
 **Tuples are faster than lists.**  
 **If you are defining a constant set of values and all you are ever going to do with it is iterate through it, use a tuple instead of a list.**  
@@ -241,6 +257,15 @@ else, take the first 1
 
 For mixed use:
 Determine the value from left to right one by one.  
+Example:
+```
+What is the output of the below boolean logic:  (c)
+() and 'b'
+a) False
+b) True
+c) ()
+d) None of above
+```
 [Return to Index](Notes.md#Index)
 #### Lambda Functions
 
@@ -1006,7 +1031,7 @@ Keys To A Good Function:
 - Idempotency
 An idempotent function always returns the same value given the same set of arguments, regardless of how many times it is called.
 - Purity
-In functional programming, a function is considered pure if it is both idempotent and has no observable side effects.
+In functional programming, a function is considered pure if it is both idempotent and has no observable side effects.  
 **Using the 'global' keyword**  
 ```
 def myFunction():   #a and b are not returned by the function
