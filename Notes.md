@@ -46,6 +46,24 @@ I will skip some points that I have already known and I believe that I won't for
 * [Lecture 8](Notes.md#Lecture-8)
   * [Function](Notes.md#Function)
   * [Functional programming](Notes.md#Functional-programming)
+* [Lecture 9](Notes.md#Lecture-9)
+  * [Module](Notes.md#Module)
+  * [NumPy](Notes.md#NumPy)
+    * [Difference between array and list](Notes.md#Difference-between-array-and-list)
+	* [When to use list or array](Notes.md#When-to-use-list-or-array)
+	* [Difference between array and ndarray](Notes.md#Difference-between-array-and-ndarray)
+	* [Data Types for ndarrays](Notes.md#Data-Types-for-ndarrays)
+	* [Operations between Arrays and Scalars](Notes.md#Operations-between-Arrays-and-Scalars)
+	* [Basic Indexing and Slicing](Notes.md#Basic-Indexing-and-Slicing)
+	* [2-Dimensional slicing](Notes.md#2-Dimensional-slicing)
+	* [Multidimensional arrays](Notes.md#Multidimensional-arrays)
+	* [Indexing with slices](Notes.md#Indexing-with-slices)
+	* [Add one-more dimension](Notes.md#Add-one-more-dimension)
+	* [Adding elements of the array](Notes.md#Adding-elements-of-the-array)
+	* [Reshape array](Notes.md#Reshape-array)
+	* [Concatenating and Splitting Arrays](Notes.md#Concatenating-and-Splitting-Arrays)
+	* [Split the matrix](Notes.md#Split-the-matrix)
+	* [Mathematical and Statistical Methods](Notes.md#Mathematical-and-Statistical-Methods)
 * [Other functions](Notes.md#Other-functions)
 * [Regular Expression Extra materials](Notes.md#Regular-Expression-Extra-Materials)
   * [Using the {n,m} Syntax](Notes.md#Using-the-{n,m}-Syntax)
@@ -1081,6 +1099,451 @@ filter(odd, li)    #[1, 3, 5, 9, -3]
 files = os.listdir(path)
 test = re.compile("test\.py$", re.IGNORECASE) 
 files = filter(test.search, files)
+```
+[Return to Index](Notes.md#Index)
+
+### Lecture 9
+
+#### Module
+
+Modules provide an easy way to organize components into a system by serving as self-contained packages of variables known as namespaces. 
+All the names defined at the top level of a module file become attributes of the imported module object.
+* "import" statement  
+	```
+	import
+		#Lets a client (importer) fetch a module as a whole
+	from
+		#Allows clients to fetch particular names from a module
+	```
+	For instance, suppose the file b.py in Figure above defines a function called spam, for external use.  
+	```
+	def spam(text):                # File b.py 
+		print(text, 'spam')
+	```
+	Now, suppose a.py wants to use spam. To this end, it might contain Python statements such as the following:  
+	```
+	import b                 # File a.py 
+	b.spam('gumby')          # Prints "gumby spam"
+	```
+* "from" statement  
+	By contrast, because "from" copies specific names from one file over to another scope, it allows us to use the copied names directly in the script without going through the module (e.g., spam):  
+	```
+	from b import spam       # Copy out a variable (one or more) 
+	spam('Hello world!')     # No need to qualify name
+	```
+	This form of from allows us to list one or more names to be copied out, separated by commas.
+* "from *" statement  
+	when we use a * instead of specific names, we get copies of all names assigned at the top level of the referenced module.  
+	Here again, we can then use the copied name printer in our  script without going through the module name:  
+	```
+	from module1 import *       # Copy out _all_ variables 
+	spam('Hello world!')
+	```
+	**Modules are loaded and run on the first import or from, and only the first.**  
+* Changing mutables in modules  
+	Names copied with a "from" become references to shared objects; as with function arguments, reassigning a copied name has **no** effect on the module from which it was copied, but changing a shared mutable object through a copied name can also change it in the module from which it was imported.  
+	```
+	#small.py:
+	x = 1
+	y = [2, 3]
+	```
+	```
+	from small import x, y   # Copy two names out
+	x = 42                   # Changes local x only
+	y[0] = 42                # Changes shared mutable in place
+	```
+	```
+	import small             # Get module name (from doesn't) 
+	small.x                  # x of small is still 1
+	small.y                  # y of small has changed: [42, 3]
+	```
+* When import is required?
+	The only time you really must use import instead of from is when you must use the same name defined in two different modules.  
+[Return to Index](Notes.md#Index)  
+
+#### NumPy
+
+NumPy, short for Numerical Python, is the fundamental package required for high performance scientific computing and data analysis. 
+* ndarray, a fast and space-efficient multidimensional array providing vectorized arithmetic operations and sophisticated broadcasting capabilities  
+* Standard mathematical functions for fast operations on entire arrays of data without having to write loops  
+* Tools for reading / writing array data to disk and working with memory-mapped files  
+* Linear algebra, random number generation, and Fourier transform capabilities  
+* Tools for integrating code written in C, C++, and Fortran  
+***
+* Create ndarrays  
+	**ndarray is a multidimensional array object.**
+	```
+	import numpy as np
+	data1 = [6, 7.5, 8, 0, 1]
+	arr1 = np.array(data1)
+	print(arr1)
+	print(arr1*10)
+	print(arr1+arr1)
+	```  
+[Return to Index](Notes.md#Index)
+##### Difference between array and list
+
+* Arrays need to be declared. Lists don’t, since they are built into Python. 
+* Arrays can store data very compactly and are more efficient for storing large amounts of data.
+* Arrays are great for numerical operations; lists cannot directly handle math operations.  
+##### When to use list or array
+
+* If you need to store a relatively short sequence of items and you don’t plan to do any mathematical operations with it, a list is the preferred choice. 
+* If you have a very long sequence of items, consider using an array. This structure offers more efficient data storage.
+* If you plan to do any numerical operations with your combination of items, use an array. Data analytics and data science rely heavily on (mostly NumPy) arrays.
+##### Difference between array and ndarray
+
+- numpy.array is just a convenience function to create an ndarray; it is not a class itself.
+- array is the function from numpy
+- ndarray is the class generated from numpy.array  
+```
+import numpy as np
+data2 = [[1, 2, 3, 4], [5, 6, 7, 8]]
+arr2 = np.array(data2)
+print(arr2.ndim)   #row number of matrix: 2
+print(arr2.shape)   #Shape of matrix: (2, 4)
+print(arr2.dtype)   #data type: int32
+print(np.zeros(10))   #[0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+print(np.zeros((3, 6)))  
+Output:[[0. 0. 0. 0. 0. 0.]
+		 [0. 0. 0. 0. 0. 0.]
+		 [0. 0. 0. 0. 0. 0.]]
+print(np.empty((2, 3, 2)))
+Output: [[[0. 0.]
+		[0. 0.]
+		[0. 0.]]
+	
+	   [[0. 0.]
+		[0. 0.]
+		[0. 0.]]]
+```
+It’s not safe to assume that np.empty will return an array of all zeros. 
+In many cases, it will return uninitialized garbage values.
+```
+np.arange(15)
+Output: [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
+```  
+[Return to Index](Notes.md#Index)
+##### Data Types for ndarrays
+
+```
+arr1 = np.array([1, 2, 3], dtype=np.float64)
+arr2 = np.array([1, 2, 3], dtype=np.int32)
+```
+NumPy data types: int8, uint8 int16, uint16 int32, uint32 int64, uint64 float16 float32 float64, float128  
+```
+#In this example, integers were cast to floating point. 
+arr = np.array([1, 2, 3, 4, 5])
+print(arr.dtype)   #int
+float_arr = arr.astype(np.float64)
+print(float_arr.dtype)  #float64
+```
+```
+#If cast some floating point numbers to be of integer dtype, the decimal part will be truncated
+arr = np.array([3.7, -1.2, -2.6, 0.5, 12.9, 10.1])
+arr.astype(np.int32)   #[ 3 -1 -2  0 12 10]
+```
+```
+numeric_strings = np.array(['1.25', '-9.6', '42'], dtype=np.string_)
+print(numeric_strings)  #[b'1.25' b'-9.6' b'42']
+print(numeric_strings.astype(float))  #[ 1.25 -9.6  42.  ]
+```
+[Return to Index](Notes.md#Index)
+##### Operations between Arrays and Scalars
+
+```
+arr = np.array([[1., 2., 3.], [4., 5., 6.]])
+print(arr * arr)   #[[ 1.  4.  9.], [16. 25. 36.]]
+print(1 / arr)
+print(arr**0.5)
+```
+##### Basic Indexing and Slicing
+
+```
+arr = np.arange(10)
+print(arr[5])   #5
+print(arr[5:8])   #[5 6 7]
+arr[5:8] = 12
+print(arr)  #[ 0  1  2  3  4 12 12 12  8  9]
+```
+```
+import numpy as np
+arr = np.arange(10)
+arr_slice = arr[5:8]
+arr_slice[1] = 12345
+print(arr)  #[0 1 2 3 4 5 12345 7 8 9]
+arr_slice[:] = 64
+print(arr)  #[ 0  1  2  3  4 64 64 64  8  9]
+```
+The above example means that the data is not copied, and any modifications to the view will be reflected in the source array.  
+If you want a copy of a slice of a ndarray instead of a view, you will need to explicitly copy the array; for example `arr[5:8].copy()`.
+```
+arr = np.arange(10)
+arr_slice = arr[5:8].copy()
+arr_slice[1] = 120
+print(arr_slice)  #[5 120 7]
+```
+[Return to Index](Notes.md#Index)
+##### 2-Dimensional slicing
+
+```
+arr2d = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+print(arr2d[2])  #[7 8 9]
+print(arr2d[:,2])  #[3 6 9]
+print(arr2d[2,:])    #[7 8 9]
+print(arr2d[0][2])   #3 
+print(arr2d[0,2])    #3
+print(arr2d[0:2,1:3])   #[[2 3] [5 6]]  row 0,1 and column 1,2
+```
+##### Multidimensional arrays
+
+```
+#2 X 2 X 3 array "arr3d"
+arr3d = np.array([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]])
+print(arr3d[0])
+'''
+[[1 2 3]
+ [4 5 6]]
+'''
+old_values = arr3d[0].copy()
+arr3d[0] = 42
+print(arr3d[0])
+'''
+[[42 42 42]
+ [42 42 42]]
+'''
+arr3d[0] = old_values
+print(arr3d[0])
+'''
+[[1 2 3]
+ [4 5 6]]
+'''
+print(arr3d[1, 0])  #[7 8 9]
+```
+[Return to Index](Notes.md#Index)
+##### Indexing with slices
+
+* One-dimentional
+```
+arr = np.arange(10)
+print(arr[1:6])    #[1 2 3 4 5]
+```
+* Two-dimentional
+```
+arr2d = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+print(arr2d[2])  #[7, 8, 9]
+print(arr2d[:2])  
+'''
+[[1 2 3]
+ [4 5 6]]
+'''
+print(arr2d[:2,1:]) #row 0, 1 and column 1, 2
+'''
+[[2, 3],
+[5, 6]]
+'''
+print(arr2d[1, :2])   #[4 5]
+print(arr2d[2, :1])   #[7]
+```
+* Example
+```
+import numpy as np
+array = np.arange(60).reshape((3, 4, 5))
+#Indexing with ints gives a scalar
+print(array[2, 3, 4] == 59)  #True
+#Indexing with slices gives a 3d array
+print(array[:2, :2, :2].shape)  #(2, 2, 2)
+#Indexing with a mix of slices and ints will give an array with < 3 dims
+print(array[0, :2, :3].shape)  #(2, 3)
+print(array[:, 2, 0:1].shape)  #(3, 1)
+```
+##### Add one-more dimension
+
+```
+x = np.array([[1,2,3],[4,5,6]])
+print(x.shape)          # (2, 3)
+y = x[...,None]
+print(y.shape)          # (2, 3, 1)
+z = x[:,:,np.newaxis]
+print(z.shape)          # (2, 3, 1)
+```
+##### Adding elements of the array
+
+```
+import numpy as np
+arr2d = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+sum_val = np.sum(arr2d)
+print(sum_val)   #45
+#sum along the rows
+print(np.sum(arr2d,axis=1))  #[ 6 15 24]
+#sum along the cols
+print(np.sum(arr2d,axis=0))  #[12 15 18]
+```
+[Return to Index](Notes.md#Index)
+##### Reshape array
+
+```
+import numpy as np
+arr = np.arange(8)
+arr2 = arr.reshape(4, 2)
+print(arr2)
+arr3 = arr.reshape((4, 2)).reshape((2, 4))
+print(arr3)
+```
+One of the passed shape dimensions can be -1, in which case the value used for that dimension will be inferred from the data:  
+```
+arr = np.arange(15).reshape((5, -1))
+print(arr)
+'''
+[[ 0  1  2]
+ [ 3  4  5]
+ [ 6  7  8]
+ [ 9 10 11]
+ [12 13 14]]
+'''
+arr2 = arr.flatten()
+print(arr2)  #[ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14]
+```
+Functions like reshape and flatten, accept an order argument indicating the order to use the data in the array. This can be 'C' or 'F' in most cases.  
+```
+arr = np.arange(12).reshape((3, 4), order = 'c')
+print(arr)
+'''
+[[ 0  1  2  3]
+ [ 4  5  6  7]
+ [ 8  9 10 11]]
+'''
+arr = np.arange(12).reshape((3, 4), order = 'F')
+print(arr)
+'''
+[[ 0  3  6  9]
+ [ 1  4  7 10]
+ [ 2  5  8 11]]
+'''
+```
+[Return to Index](Notes.md#Index)
+##### Concatenating and Splitting Arrays
+
+```
+import numpy as np
+arr1 = np.array([[1, 2, 3], [4, 5, 6]])
+arr2 = np.array([[7, 8, 9], [10, 11, 12]])
+arr = np.concatenate([arr1, arr2], axis=0)
+print(arr)
+'''
+[[ 1  2  3]
+ [ 4  5  6]
+ [ 7  8  9]
+ [10 11 12]]
+'''
+arr = np.concatenate([arr1, arr2], axis=1)
+print(arr)
+'''
+[[ 1  2  3  7  8  9]
+ [ 4  5  6 10 11 12]]
+'''
+```
+There are some convenience functions, like vstack and hstack
+```
+arr = np.vstack((arr1, arr2))
+print(arr)
+arr = np.hstack((arr1, arr2))
+print(arr)
+'''
+[[ 1  2  3]
+ [ 4  5  6]
+ [ 7  8  9]
+ [10 11 12]]
+[[ 1  2  3  7  8  9]
+ [ 4  5  6 10 11 12]]
+'''
+```
+##### Split the matrix
+
+```
+from numpy.random import randn
+arr = randn(5, 2)
+print(arr)
+'''
+[[ 1.03345176  0.95499481]
+ [-0.41724051  0.26435938]
+ [ 0.17971512 -1.43196278]
+ [ 2.14256596 -0.16677754]
+ [ 1.10451902  0.50121965]]
+'''
+first, second, third = np.split(arr, [1, 3]) 
+'''
+Split matrix to three part, first part has 1 row, second part has 2 row, third part has three row. 
+While there are no enough rows for the third part, so the third part only has 2 rows.
+'''
+print(first)   #[[ 1.03345176  0.95499481]]
+print(second)
+'''
+[[-0.41724051  0.26435938]
+ [ 0.17971512 -1.43196278]]
+'''
+print(third)
+'''
+[[ 2.14256596 -0.16677754]
+ [ 1.10451902  0.50121965]]
+'''
+```
+[Return to Index](Notes.md#Index)
+##### Mathematical and Statistical Methods
+
+* sum: Sum of all the elements in the array or along an axis. 
+* mean: Arithmetic mean
+* std, var: Standard deviation and variance, respectively
+* min, max: Minimum and maximum.
+* argmin, argmax: Indices of minimum and maximum elements, respectively
+* prod: Product of elements starting from 0
+* cumsum: Cumulative sum of elements starting from 0
+* cumprod: Cumulative product of elements starting from 0
+```
+arr = np.random.randn(5, 4) # normally-distributed data arr
+arr.mean()  
+np.mean(arr)
+arr.sum()
+arr.std()
+arr.mean(axis=1)
+arr.sum(0)
+```
+***
+```
+arr = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+arr.prod()   #362880      product of all elements
+arr.prod(0)   #[ 28,  80, 162]   product of each list
+arr.cumsum(0)  
+'''
+[[ 0,  1,  2],
+ [ 3,  5,  7],
+ [ 9, 12, 15]]
+'''
+arr.cumprod(1)
+'''
+[[  0,   0,   0],
+ [  3,  12,  60],
+ [  6,  42, 336]]
+'''
+np.cumsum(arr)
+np.cumsum(arr, 0)
+'''
+[[ 0,  1,  2],
+ [ 3,  5,  7],
+ [ 9, 12, 15]]
+'''
+np.cumprod(arr+1,0)
+'''
+[[  1,   2,   3],
+ [  4,  10,  18],
+ [ 28,  80, 162]]
+'''
+```
+***
+```
+b= np.arange(4)   #[0, 1, 2, 3]
+b.cumsum()       #[0, 1, 3, 6]
+b.cumprod()      #[0, 0, 0, 0]
 ```
 [Return to Index](Notes.md#Index)
 ### Other functions
