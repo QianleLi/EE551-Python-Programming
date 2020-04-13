@@ -64,6 +64,14 @@ I will skip some points that I have already known and I believe that I won't for
 	* [Concatenating and Splitting Arrays](Notes.md#Concatenating-and-Splitting-Arrays)
 	* [Split the matrix](Notes.md#Split-the-matrix)
 	* [Mathematical and Statistical Methods](Notes.md#Mathematical-and-Statistical-Methods)
+* [Lecture 10](Notes.md#Lecture-10)
+  * [Pandas](Notes.md#Pandas)
+    * [Columns in DataFrame](Notes.md#Columns-in-DataFrame)
+	* [Select Rows](Notes,md#Select-Rows)
+	* [Missing Elements](Notes.md#Missing-Elements)
+	* [Grouping](Notes.md#Grouping)
+	* [dataFrame without header](Notes.md#dataFrame-without-header)
+	* [Filtering Rows](Notes.md#Filtering-Rows)
 * [Other functions](Notes.md#Other-functions)
 * [Regular Expression Extra materials](Notes.md#Regular-Expression-Extra-Materials)
   * [Using the {n,m} Syntax](Notes.md#Using-the-{n,m}-Syntax)
@@ -1546,6 +1554,104 @@ b.cumsum()       #[0, 1, 3, 6]
 b.cumprod()      #[0, 0, 0, 0]
 ```
 [Return to Index](Notes.md#Index)
+### Lecture 10
+
+#### Pandas
+
+With Pandas, we can load data from different sources. Some are loading from CSV or a remote URL or from a database. The loaded data is stored in a Pandas data structure called DataFrame. DataFrame’s are usually refered by the variable name df.
+```
+import pandas as pd
+df = pd.read_csv("SAT.csv")
+df
+df.head()   #  shows you the top a few lines of the data
+df.shape   # dataFrame size 
+load data from URL
+df2 = pd.read_csv("http://samplecsvs.s3.amazonaws.com/SalesJan2009.csv")   #load data from URL
+#http://samplecsvs.s3.amazonaws.com/SalesJan2009.csv
+```
+##### Columns in DataFrame
+
+A column in a DataFrame can be retrieved by attribute:  
+`df['Math']`  
+A column in a DataFrame can be retrieved by dict-like notation:  
+`df.Math`  
+**Select Multiple Columns from DataFrame**  
+```
+1. Create a list of columns to be selected
+columns_to_be_selected = ["Reading", "Math", "Writing"]
+2. Use it as an index to the DataFrame
+df[columns_to_be_selected]
+```
+[Return to Index](Notes.md#Index)
+##### Select Rows
+
+Unlike the columns, our current DataFrame does not have a label which we can use to refer the row data.  
+But like arrays, DataFrame provides numerical indexing(0, 1, 2…) by default.
+```
+1. using numerical indexes - iloc
+df.iloc[0:3, :]  #Row 0~2, all columns
+df.loc[0:7]   #Row 0~7, all columns
+df.iloc[:,0:3]   # similarly, "iloc" can apply to columns
+```
+**Difference btw iloc vs loc**  
+- loc gets rows (or columns) with particular labels from the index.
+- iloc gets rows (or columns) at particular positions in the index (so it only takes integers).  
+Examples:  
+```
+df.loc[2:4, 'Math']   #The 'Math' column, 2~4 row
+df.iloc[2:4, 'Math']   #2, 3 row
+df.loc[2:4, ['Math', 'Reading']]  
+```
+##### Missing Elements
+
+- Determine if there is any missing element
+  - isnull: If missing, return True, if not, return False.
+  - notnull: If missing, return False, if not, return True.
+  ```
+  print(df.isnull())   #Find those missing elements
+  print(df.notnull())   #Find which is not a missing element
+  print(df[df.notnull()]*100)  #filtered missing elements and do calculation to those who are not missing elements
+  ```
+- Delete missing elements: dropna  
+  `df.dropna()`  
+- Replace missing elements: fillna
+  `df.fillna(0)`  
+  `df.fillna('T')`  
+  `df.fillna(0,inplace=True)`  
+  **Add the parameter `inplace` to change the source file.**  
+  [Return to Index](Notes.md#Index)  
+  
+##### Grouping
+
+You can perform statistical operations such as min, max, mean etc., over one or more columns of a Dataframe.  
+```
+df["Math"].sum()  #Sum of a column
+df[["Math", "Reading"]].mean()   #two mean values for the two column
+df[["Math", "Reading"]].min()  #two min values for the two column
+df[["Math", "Reading"]].max()
+df[["Math", "Reading"]].median()  #two median values of two column  中位数
+```
+##### dataFrame without header
+
+header is the column names. Without header, columns will be represented by numbers just as rows.
+```
+df_noheader = pd.read_csv('SAT_no_header.csv', header = None)
+df_noheader[2]   #The 2 column
+df_noheader[0:2]   #The 0 and 1 row
+df_noheader.iloc[0:2,2:4]     #The 2,3 column of the 0,1 row
+df_noheader.loc[0:2,2:4]    #The 2,3,4 column of the 0,1,2 row
+df_noheader.loc[[0, 1, 2, 6,7, 8],2:4]    #The 2,3,4 column of the 0,1,2,6,7,8 row
+df_noheader.loc[list(range(0,3)) + list(range(6,9)),2:4]  #Same of the above statement
+```
+##### Filtering Rows
+
+```
+import pandas as pd
+df = pd.read_csv("SAT.csv")
+df_part = df [ df['numStudents']>30]   # we can filter by conditions
+df_refine = df[ (df['numStudents']<30)  &  (df['Reading']>400) & (df['Math']>400) ]   # we can filter by multiple conditions
+```
+[Return to Index](Notes.md#Index)  
 ### Other functions
 
 - Counter function
