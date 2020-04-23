@@ -72,6 +72,11 @@ I will skip some points that I have already known and I believe that I won't for
 	* [Grouping](Notes.md#Grouping)
 	* [dataFrame without header](Notes.md#dataFrame-without-header)
 	* [Filtering Rows](Notes.md#Filtering-Rows)
+* [Lecture 11](Notes.md#Lecture-11)
+  * [class and instance](Notes.md#class-and-instance)
+    * [class variables and instance variables](Notes.md#class-variables-and-instance-variables)
+	* [Instance and class methods in python](Notes.md#Instance-and-class-methods-in-python)
+	* [Self-intuition](Notes.md#Self-intuition)
 * [Other functions](Notes.md#Other-functions)
 * [Regular Expression Extra materials](Notes.md#Regular-Expression-Extra-Materials)
   * [Using the {n,m} Syntax](Notes.md#Using-the-{n,m}-Syntax)
@@ -1652,6 +1657,141 @@ df_part = df [ df['numStudents']>30]   # we can filter by conditions
 df_refine = df[ (df['numStudents']<30)  &  (df['Reading']>400) & (df['Math']>400) ]   # we can filter by multiple conditions
 ```
 [Return to Index](Notes.md#Index)  
+### Lecture 11
+
+#### class and instance
+
+##### class variables and instance variables
+
+- Class variables are variables that are being shared with all instances (objects) which were created using that particular class.  
+- Instance variables are variables which all instances keep for themselves (i.e a particular object owns its instance variables)  
+	```
+	#Class variables in python are defined just after the class definition and outside of any methods:
+	class SomeClass:
+		variable_1 = "This is a class variable"
+		variable_2 = 100    #this is also a class variable.
+		
+	#Unlike class variables, instance variables should be defined within methods:
+		def __init__(self, param1, param2):
+			self.instance_var1 = param1
+			#instance_var1 is a instance variable
+			self.instance_var2 = param2   
+			#instance_var2 is a instance variable
+	```
+Example:  
+```
+>>> obj1 = SomeClass("some thing", 18) 
+#creating instance of SomeClass named obj1
+>>> obj2 = SomeClass(28, 6) 
+#creating a instance of SomeClass named obj2
+>>> obj1.variable_1
+'This is a class variable'
+>>> obj2.variable_1
+'This is a class variable'
+```
+So as seen above, both obj1 and obj2 gives the same value when variable_1 is accessed, which is the normal behavior that we should expect from a class variable.  
+Let’s find about instance variables:  
+```
+>>> obj1.instance_var1
+'some thing'
+>>> obj2.instance_var1
+28
+```
+So the expected behavior of instance variables can be seen above without any error. That is, both obj1 and obj2 have two different instance variables for themselves.  
+[Return to Index](Notes.md#Index) 
+##### Instance and class methods in python
+
+When defining an instance method, the first parameter of the method should always be self.  
+```
+class SomeClass:    
+    def create_arr(self): # An instance method
+        self.arr = []
+    
+    def insert_to_arr(self, value):  #An instance method
+        self.arr.append(value)
+```
+```
+>>> obj3 = SomeClass()
+>>> obj3.create_arr()
+>>> obj3.insert_to_arr(5)
+>>> obj3.arr
+[5]
+```
+So as you can notice from above, although when defining an instance method the first parameter is self, when calling that method, we do not pass anything for self as arguments.  
+***
+Just like instance methods, in class methods also there is a special parameter that should be placed as the first parameter. It is the cls parameter, which represents the class.  
+Without even instantiating an object, we can access class methods as follows:  
+`SomeClass.class_method()`  
+So all we have to call the class method with the name of the class. And in here also just like instance methods, although there is a parameter defined as cls, we do not pass any argument when calling the method.  
+**Class method is not commonly used so here we don't have an example.**  
+[Return to Index](Notes.md#Index)  
+##### Self-intuition
+
+If a class wants to guarantee that an attribute like name is always set in its instances, it more typically will fill out the attribute at construction time, like this:  
+```
+class C1:              
+    def __init__(self, who):    # Set name when constructed
+        self.name = who         # Self is either I1 or I2
+
+I1 = C1('bob')                  # Sets I1.name to 'bob'
+I2 = C1('sue')                  # Sets I2.name to 'sue'
+
+print(I1.name)                 # Prints 'bob'
+```
+Let’s clarify this with an example:  
+```
+class SomeClass:
+    def __init__(self):
+        self.arr = [] 
+        #All SomeClass objects will have an array arr by default
+    
+    def insert_to_arr(self, value):
+        self.arr.append(value)
+```
+So now let’s create two objects of SomeClass and append some values for their arrays:  
+```
+obj1 = SomeClass()
+obj2 = SomeClass()
+obj1.insert_to_arr(6)
+```
+If it’s coded or inherited, Python automatically calls a method named `__init__` each time an instance is generated from a class. The effect here is to initialize instances when they are made, without requiring extra method calls.  
+[Return to Index](Notes.md#Index)  
+#### Object Oriented Programming
+
+In the Python object model, classes and the instances you generate from them are two distinct object types:  
+- Classes: Serve as instance factories. Their attributes provide behavior—data and functions —that is inherited by all the instances generated from them (e.g., a function to compute an employee’s salary from pay and hours).  
+- Instances: represent the concrete items in a program’s domain. Their attributes record data that varies per specific object (e.g., an employee’s Social Security number).  
+
+The primary difference between classes and instances is that classes are a kind of factory for generating instances. For example, in a realistic application, we might have an Employee class that defines what it means to be an employee; from that class, we generate actual Employee instances.  
+#####  Inheritance
+
+Suppose you’re assigned the task of implementing an employee database application. As a Python OOP programmer, you might begin by coding a general superclass that defines default behaviors common to all the kinds of employees in your organization:
+```
+class Employee:                     # General Superclass
+    def computeSalary(self): return 500   # Common or default behaviors
+    def giveRaise(self): pass
+    def promote(self): pass
+    def retire(self): pass
+```
+Once you’ve coded this general behavior, you can specialize it for each specific kind of employee to reflect how the various types differ from the norm.  
+```
+class Engineer(Employee):          # Specialized subclass
+    def computeSalary(self): return 1000  # Something custom here
+```
+Because the `computeSalary` version here appears lower in the class tree, it will replace (override) the general version in `Employee`.  
+You then create instances of the kinds of employee classes that the real employees belong to, to get the correct behavior:  
+```
+bob = Employee()      # Default behavior
+tom = Employee()      # Default behavior
+sue = Engineer()      # Custom salary calculator
+```
+Ultimately, these three instance objects might wind up embedded in a larger container object—for instance, a list:  
+```
+company = [bob, tom, sue]      # A composite object
+
+for emp in company:
+    print(emp.computeSalary()) # Run this object's version: default or custom
+```
 ### Other functions
 
 - Counter function
